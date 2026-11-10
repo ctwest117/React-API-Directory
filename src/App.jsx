@@ -1,29 +1,16 @@
 import React from "react";
-import { fetchData } from "./fetch";
+import { useFetchData } from "./useFetch";
+
+const url = "https://jsonplaceholder.typicode.com/users";
 
 function App() {
-  const [users, setUsers] = React.useState([]);
+  const { data: users, isLoading, err } = useFetchData(url);
   const [query, setQuery] = React.useState("");
-  const [isLoading, setLoading] = React.useState(false);
-  const [loadFailed, setFailed] = React.useState(false);
-
-  React.useEffect(() => {
-    async function loadUsers() {
-      setLoading(true);
-      const data = await fetchData();
-      if (!data) setFailed(true);
-      else setFailed(false);
-      setUsers(data || []);
-      setLoading(false);
-    }
-    loadUsers();
-  }, []);
-
-  React.useEffect(() => console.log("loading", isLoading), [isLoading]);
 
   const message = () => {
-    if (loadFailed) return <p>Fetch Failed</p>;
-    return isLoading ? <p>Loading users...</p> : <></>;
+    if (err) return <div>Error</div>;
+
+    return isLoading ? <div>Loading...</div> : null;
   };
 
   return (
@@ -43,12 +30,14 @@ function Search({ query, setQuery }) {
 
 function List({ users, query }) {
   const list = users.filter(
-    ({ name, username }) =>
+    ({ name, username, email }) =>
       name.toLowerCase().includes(query.toLowerCase()) ||
+      email.toLowerCase().includes(query.toLowerCase()) ||
       username.toLowerCase().includes(query.toLowerCase()),
   );
   return (
     <ul>
+      <div>results: {list.length}</div>
       {list.map(({ id, name, username, phone, email }) => (
         <li key={id}>
           <h2>{username}</h2>
