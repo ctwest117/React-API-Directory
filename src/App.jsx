@@ -47,7 +47,7 @@ function Search({ query, setQuery }) {
   return (
     <>
       <input value={query} onChange={(e) => setQuery(e.target.value)}></input>
-      <p>Searching for {query}</p>
+      {query && <p>Searching for {query}</p>}
     </>
   );
 }
@@ -62,22 +62,26 @@ function List({ users, query }) {
   return (
     <ul>
       <div>results: {list.length}</div>
-      {list.map(({ id, name, username, phone, email, image }) => (
-        <li key={id}>
-          <img src={image.thumbnailUrl} alt={image.title} />
-          <h2>{username}</h2>
-          <div>
-            <p>{name} </p>
-            <ul>
-              <p>contact info: </p>
-              <li>
-                email: <a href={email}>{email}</a>
-              </li>
-              <li>phone number: {phone}</li>
-            </ul>
-          </div>
-        </li>
-      ))}
+      {list.length > 0 ? (
+        list.map(({ id, name, username, phone, email, image }) => (
+          <li key={id}>
+            <img src={image.thumbnailUrl} alt={image.title} />
+            <h2>{username}</h2>
+            <div>
+              <p>{name} </p>
+              <ul>
+                <p>contact info: </p>
+                <li>
+                  email: <a href={email}>{email}</a>
+                </li>
+                <li>phone number: {phone}</li>
+              </ul>
+            </div>
+          </li>
+        ))
+      ) : (
+        <p>No results</p>
+      )}
     </ul>
   );
 }
