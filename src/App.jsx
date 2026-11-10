@@ -1,5 +1,7 @@
 import React from "react";
 import { useFetchData } from "./useFetch";
+import { List } from "./modules/List";
+import { Search } from "./modules/Search";
 
 const usersUrl = "https://jsonplaceholder.typicode.com/users";
 const imagesUrl =
@@ -28,7 +30,7 @@ function App() {
   const [query, setQuery] = React.useState("");
 
   const message = () => {
-    if (err) return <div>Error</div>;
+    if (err) return <div>Could not fetch Users. {err}</div>;
 
     return isLoading ? <div>Loading...</div> : null;
   };
@@ -40,49 +42,6 @@ function App() {
       {message()}
       <List users={users} query={query} />
     </main>
-  );
-}
-
-function Search({ query, setQuery }) {
-  return (
-    <>
-      <input value={query} onChange={(e) => setQuery(e.target.value)}></input>
-      {query && <p>Searching for {query}</p>}
-    </>
-  );
-}
-
-function List({ users, query }) {
-  const list = users.filter(
-    ({ name, username, email }) =>
-      name.toLowerCase().includes(query.toLowerCase()) ||
-      email.toLowerCase().includes(query.toLowerCase()) ||
-      username.toLowerCase().includes(query.toLowerCase()),
-  );
-  return (
-    <ul>
-      <div>results: {list.length}</div>
-      {list.length > 0 ? (
-        list.map(({ id, name, username, phone, email, image }) => (
-          <li key={id}>
-            <img src={image.thumbnailUrl} alt={image.title} />
-            <h2>{username}</h2>
-            <div>
-              <p>{name} </p>
-              <ul>
-                <p>contact info: </p>
-                <li>
-                  email: <a href={email}>{email}</a>
-                </li>
-                <li>phone number: {phone}</li>
-              </ul>
-            </div>
-          </li>
-        ))
-      ) : (
-        <p>No results</p>
-      )}
-    </ul>
   );
 }
 
